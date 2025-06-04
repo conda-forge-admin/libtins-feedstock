@@ -8,6 +8,9 @@ package:
 source:
   url: https://github.com/mfontanini/{{ name|lower }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: ff0121b4ec070407e29720c801b7e1a972042300d37560a62c57abadc9635634
+  patches:
+    - 0001-fix-cmake-minimum-required-version.patch 
+    - 0002-include-cstdint.patch
 
 build:
   number: 0
