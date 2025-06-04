@@ -1,12 +1,13 @@
-{% set name = "libtins" %}
-{% set version = "4.4" %}
+context:
+  name: libtins
+  version: "4.4"
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
-  url: https://github.com/mfontanini/{{ name|lower }}/archive/refs/tags/v{{ version }}.tar.gz
+  url: https://github.com/mfontanini/${{ name|lower }}/archive/refs/tags/v${{ version }}.tar.gz
   sha256: ff0121b4ec070407e29720c801b7e1a972042300d37560a62c57abadc9635634
   patches:
     - 0001-fix-cmake-minimum-required-version.patch 
@@ -14,31 +15,33 @@ source:
 
 build:
   number: 0
-  run_exports:
-    - {{ pin_subpackage('libtins', max_pin='x') }}
 
 requirements:
   build:
     - cmake
-    - {{ compiler('cxx') }}
-    - {{ stdlib("c") }}
-    - make  # [unix]
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib("c") }}
+    - ninja
 
   host:
     - libpcap
-    - openssl  # [osx]
+    - if: osx
+      then:
+        - openssl
 
-test:
-  commands:
-    - test -f $PREFIX/include/tins/tins.h  # [not win]
-    - test -f $PREFIX/lib/libtins${SHLIB_EXT}  # [unix]
-    - if not exist %PREFIX%\Library\bin\tins.dll exit 1  # [win]
-    - if not exist %PREFIX%\Library\include\tins\tins.h exit 1  # [win]
+  run_exports:
+    - ${{ pin_subpackage('libtins', upper_bound='x') }}
+
+tests:
+  - package_contents:
+      include:
+        - tins/tins.h
+      lib:
+        - tins
 
 about:
-  home: https://github.com/mfontanini/libtins
+  homepage: https://github.com/mfontanini/libtins
   license: BSD-2-Clause
-  license_family: BSD
   license_file: LICENSE
   summary: libtins is a high-level, multiplatform C++ network packet sniffing and crafting library
   description: |
@@ -51,3 +54,5 @@ extra:
   recipe-maintainers:
     - costrouc
     - tylerpotts
+    - wolfv
+    - wep21
