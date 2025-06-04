@@ -17,4 +17,4 @@ docker_image:
 libpcap:
 - '1.10'
 target_platform:
-- linux-64
+- linux-aarch64
